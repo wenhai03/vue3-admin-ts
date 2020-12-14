@@ -22,7 +22,7 @@
           <a-input
             v-model:value="account_form.password"
             type="password"
-            utocomplete="off"
+            autocomplete="off"
           />
         </a-form-item>
 
@@ -31,7 +31,7 @@
           <a-input
             v-model:value="account_form.passwords"
             type="password"
-            utocomplete="off"
+            autocomplete="off"
           />
         </a-form-item>
 
@@ -43,7 +43,7 @@
                 maxlength="6"
                 v-model:value="account_form.code"
                 type="text"
-                utocomplete="off"
+                autocomplete="off"
               />
             </a-col>
             <a-col :span="10">
@@ -83,6 +83,21 @@ export default defineComponent({
   name: "Login",
   components: {},
   setup(props) {
+    const checkUsername = async (rule: any, value: any, callback: any) => {
+      if (!Number.isInteger(value)) {
+        return Promise.reject('请输入用户名') // 错误的情况
+      }
+      if (!value) {
+        return Promise.reject('请输入用户名')
+      } else {
+        if (value < 18) {
+          return Promise.reject('请输入用户名')
+        } else {
+          return Promise.resolve()
+        }
+      }
+    }
+
     const formConfig = reactive({ // 类似于JSON对象的语法
       layout: {
         labelCol: {span: 10},
@@ -97,7 +112,7 @@ export default defineComponent({
       },
       // eslint-disable-next-line @typescript-eslint/camelcase
       rules_form: {
-        // username: [{ validator: checkUsername, trigger: 'change' }],
+        username: [{validator: checkUsername, trigger: 'change'}],
         // password: [{ validator: checkPassword, trigger: 'change' }],
         // passwords: [{ validator: checkPasswords, trigger: 'change' }],
         // code: [{ validator: checkCode, trigger: 'change' }]
@@ -110,7 +125,8 @@ export default defineComponent({
     }
 
     return {
-      ...data
+      ...data,
+      handleFinish
     }
   }
 
